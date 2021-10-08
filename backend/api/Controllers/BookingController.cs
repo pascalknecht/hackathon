@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using data.Entities;
 using data;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -28,7 +29,10 @@ namespace api.Controllers
 		[HttpGet]
 		public IEnumerable<Booking> Get()
 		{
-			return _context.Booking.ToList();
+			return _context.Booking
+						.Include(x => x.User)
+						.Include(x => x.ParkingSpace)
+				.ToList();
 		}
 	}
 }

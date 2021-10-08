@@ -18,6 +18,7 @@ namespace api
 			var host = CreateHostBuilder(args).Build();
 
 			CreateDbIfNotExists(host);
+			CreateTestdataIfNotExists(host);
 
 			host.Run();
 		}
@@ -31,6 +32,24 @@ namespace api
 				{
 					var context = services.GetRequiredService<ParkingDbContext>();
 					DbInitializer.Initialize(context);
+				}
+				catch (Exception ex)
+				{
+					var logger = services.GetRequiredService<ILogger<Program>>();
+					logger.LogError(ex, "An error occurred creating the DB.");
+				}
+			}
+		}
+
+		private static void CreateTestdataIfNotExists(IHost host)
+		{
+			using (var scope = host.Services.CreateScope())
+			{
+				var services = scope.ServiceProvider;
+				try
+				{
+					var context = services.GetRequiredService<ParkingDbContext>();
+					DbInitializer.DummyTestdata(context);
 				}
 				catch (Exception ex)
 				{

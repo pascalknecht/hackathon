@@ -9,5 +9,8 @@ namespace data.Entities
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int ID { get; set; }
+		public string Firstname { get; set; }
+		public string Lastname { get; set; }
+
 	}
 }

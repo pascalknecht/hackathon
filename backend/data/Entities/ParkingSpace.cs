@@ -1,6 +1,8 @@
+using System.Collections;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace data.Entities
 {
@@ -17,7 +19,10 @@ namespace data.Entities
 		public int ID { get; set; }
 		public double Longitude { get; set; }
 		public double Latitude { get; set; }
+		public string Description { get; set; }
 		public ChargerType ChargerType { get; set; }
+		public Owner Owner { get; set; }
+		public virtual IEnumerable<Booking> bookings { get; set; }
 
 	}
 }

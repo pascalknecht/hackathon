@@ -10,10 +10,36 @@ namespace data
 		{
 			context.Database.EnsureCreated();
 
-			if (context.ParkingSpace.Any())
+			/*if (context.ParkingSpace.Any())
 			{
 				return;   // DB has been seeded
+			}*/
+
+			var owners = new Owner[]
+			{
+				new Owner{Name = "ewb"},
+				new Owner{Name = "Stadt Bern"},
+			};
+
+			foreach (Owner s in owners)
+			{
+				context.Owner.Add(s);
 			}
+			context.SaveChanges();
+
+			var users = new User[]
+			{
+				new User{Firstname = "Thomas", Lastname="Test"},
+				new User{Firstname = "Tina", Lastname="Muster"},
+			};
+
+			Console.WriteLine("aaa {0}", users[0].Firstname);
+
+			foreach (User s in users)
+			{
+				context.User.Add(s);
+			}
+			context.SaveChanges();
 
 			var parkingSpaces = new ParkingSpace[]
 			{
@@ -30,6 +56,23 @@ namespace data
 			}
 			context.SaveChanges();
 
+		}
+
+		public static void DummyTestdata(ParkingDbContext context)
+		{
+			var user = context.User.First();
+			var parkingSpace = context.ParkingSpace.Single(r => r.ID == 1);
+			Console.WriteLine("LOG {0}", user.Firstname);
+			var bookings = new Booking[]
+			{
+				new Booking{BookingFrom = DateTime.Now, BookingTo = DateTime.Now, User = user, ParkingSpace = parkingSpace}
+			};
+
+			foreach (Booking s in bookings)
+			{
+				context.Booking.Add(s);
+			}
+			context.SaveChanges();
 		}
 	}
 }
