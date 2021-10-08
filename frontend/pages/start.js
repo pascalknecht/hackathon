@@ -76,6 +76,17 @@ export default function Home({ rootUrl }) {
             })
         );
 
+        const showPosition = (position) => {
+            console.log(position);
+            new mapboxgl.Marker()
+                .setLngLat([position.coords.longitude, position.coords.latitude])
+                .addTo(map.current);
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+
         fetch(rootUrl + "/parkingspace")
             .then(response => response.json())
             .then(markers => {
@@ -112,7 +123,7 @@ export default function Home({ rootUrl }) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({startDate, endDate})
+            body: JSON.stringify({bookingFrom: startDate, bookingTo: endDate, parkingId: currentParkingSpaceId})
         })
             .then(response => response.json())
             .then(available => {

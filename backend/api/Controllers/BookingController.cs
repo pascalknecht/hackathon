@@ -35,12 +35,23 @@ namespace api.Controllers
 				.ToList();
 		}
 
-		/*
 		[HttpPost]
-		public async Task<IActionResult> Create(Booking booking)
+		public async Task<IActionResult> Create(BookingDto bookingDto)
 		{
+			var booking = new Booking() {
+				BookingFrom = bookingDto.bookingFrom,
+				BookingTo = bookingDto.bookingTo,
+				ParkingSpace = _context.ParkingSpace.Where(x => x.ID == bookingDto.parkingId).FirstOrDefault()
+			};
 			_context.Add(booking);
 			await _context.SaveChangesAsync();
-		}*/
+		}
+	}
+
+	public class BookingDto
+	{
+		public string bookingFrom {get;set;}
+		public string bookingTo {get;set;}
+		public string parkingId {get;set;}
 	}
 }
