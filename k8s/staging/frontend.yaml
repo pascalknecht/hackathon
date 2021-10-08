@@ -34,4 +34,7 @@ spec:
       - name: src-frontend
         image: src-frontend
         ports:
-          - containerPort: 3000      
+          - containerPort: 3000   
+        env:
+          - name: "ROOT_URL"
+            value: "https://hackathon-api.substring.ch"           
