@@ -47,10 +47,19 @@ namespace api.Controllers
 		}
 
 		[HttpGet]
-		[Route("availability")]
-		public bool GetAvailability(AvailabilityInput input)
+		[Route("{id}/nearest")]
+		public ParkingSpace GetNearestParkingSpace(int id)
 		{
-			var parkingSpace = _context.ParkingSpace.Include(x => x.Bookings).Where(r => r.ID == input.ParkingSpaceID).FirstOrDefault();
+			var parkingSpace = _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
+			return parkingSpace;
+		}
+
+
+		[HttpPost]
+		[Route("{id}/availability")]
+		public bool GetAvailability(int id, AvailabilityInput input)
+		{
+			var parkingSpace = _context.ParkingSpace.Include(x => x.Bookings).Where(r => r.ID == id).FirstOrDefault();
 
 			bool available = true;
 
