@@ -12,14 +12,14 @@ build:
       manual:
         - src: 'backend/**/*.cs'
           dest: .
-  - image: src-frontend
-    context: frontend
-    docker:
-        dockerfile: Dockerfile
-    sync:
-      manual:
-        - src: 'frontend/**/*.js'
-          dest: .
+  # - image: src-frontend
+  #   context: frontend
+  #   docker:
+  #       dockerfile: Dockerfile
+  #   sync:
+  #     manual:
+  #       - src: 'frontend/**/*.js'
+  #         dest: .
 
 profiles:
   - name: substring
