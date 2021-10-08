@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using data.Entities;
 using data;
 using Microsoft.EntityFrameworkCore;
+using HttpData;
 
 namespace api.Controllers
 {
@@ -38,24 +39,17 @@ namespace api.Controllers
 		}
 
 		[HttpPost]
-		public HttpStatusCode Create(BookingDto bookingDto)
+		public HttpStatusCode Create(BookingInput bookingDto)
 		{
-			/*var booking = new Booking()
+			var booking = new Booking()
 			{
 				BookingFrom = DateTime.Parse(bookingDto.bookingFrom),
 				BookingTo = DateTime.Parse(bookingDto.bookingTo),
-				// ParkingSpace = _context.ParkingSpace.Where(x => x.ID == bookingDto.parkingId).FirstOrDefault()
+				ParkingSpace = _context.ParkingSpace.Where(x => x.ID == bookingDto.parkingId).FirstOrDefault()
 			};
 			_context.Booking.Add(booking);
-			_context.SaveChanges();*/
+			_context.SaveChanges();
 			return HttpStatusCode.Created;
 		}
-	}
-
-	public class BookingDto
-	{
-		public string bookingFrom { get; set; }
-		public string bookingTo { get; set; }
-		public int parkingId { get; set; }
 	}
 }
