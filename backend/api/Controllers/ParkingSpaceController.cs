@@ -34,7 +34,7 @@ namespace api.Controllers
 		}
 
 		[HttpGet]
-		[Route(":id")]
+		[Route("{id}")]
 		public ParkingSpace Get(int id)
 		{
 			return _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
