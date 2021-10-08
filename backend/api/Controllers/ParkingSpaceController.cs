@@ -33,6 +33,13 @@ namespace api.Controllers
 			return _context.ParkingSpace.ToList();
 		}
 
+		[HttpGet]
+		[Route(":id")]
+		public ParkingSpace Get(int id)
+		{
+			return _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
+		}
+
 		[HttpPost]
 		[Route("availability")]
 		public bool GetAvailability(AvailabilityInput input)
