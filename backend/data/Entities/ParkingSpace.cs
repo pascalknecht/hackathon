@@ -21,6 +21,7 @@ namespace data.Entities
 		public double Latitude { get; set; }
 		public string Description { get; set; }
 		public string Title { get; set; }
+		public double PricePerHour { get; set; }
 		public ChargerType ChargerType { get; set; }
 		public Owner Owner { get; set; }
 		public virtual IEnumerable<Booking> Bookings { get; set; }

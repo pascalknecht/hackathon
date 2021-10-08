@@ -47,11 +47,21 @@ namespace api.Controllers
 		}
 
 		[HttpGet]
-		[Route("{id}/nearest")]
-		public ParkingSpace GetNearestParkingSpace(int id)
+		[Route("nearest")]
+		public int GetNearestParkingSpace(double longitude, double langitude)
 		{
-			var parkingSpace = _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
-			return parkingSpace;
+			var parkingSpaces = _context.ParkingSpace.ToList();
+			var parkingSpaceNearest = parkingSpaces.First();
+
+			foreach (var parkingSpace in parkingSpaces)
+			{
+				//var sCoord = new GeoCoordinate(sLatitude, sLongitude);
+				//var eCoord = new GeoCoordinate(eLatitude, eLongitude);
+
+				return sCoord.GetDistanceTo(eCoord);
+			}
+
+			return parkingSpaceNearest.ID;
 		}
 
 
