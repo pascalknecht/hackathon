@@ -47,7 +47,9 @@ namespace api.Controllers
 			var parkingSpace = _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
 			var sCoord = new Location(parkingSpace.Latitude, parkingSpace.Longitude);
 
-			parkingSpace.TravelTime = Math.Round((CalculateDistance(sCoord, location) / 225 / 60));
+			parkingSpace.PricePerHour = ExtremeCrazyDynamicPricingAlgorithm(parkingSpace.PricePerHour);
+			parkingSpace.PowerPricePerHour = ExtremeCrazyDynamicPricingAlgorithm(parkingSpace.PowerPricePerHour);
+			parkingSpace.TravelTime = Math.Round((CalculateDistance(sCoord, location) / 250));
 
 			return parkingSpace;
 		}
@@ -66,6 +68,8 @@ namespace api.Controllers
 				var eCoord = new Location(latitude, longitude);
 
 				var distanceCurrent = CalculateDistance(sCoord, eCoord);
+				Console.WriteLine("distance: {0}, parkingSpace: {1}", distanceCurrent, parkingSpace.Title);
+
 				if (distanceCurrent < distance)
 				{
 					distance = distanceCurrent;
@@ -119,10 +123,10 @@ namespace api.Controllers
 		// Stolen from stackoverflow.. sorry :-P https://stackoverflow.com/questions/60700865/find-distance-between-2-coordinates-in-net-core
 		private double CalculateDistance(Location point1, Location point2)
 		{
-			var d1 = point1.Latitude * (Math.PI / 180.0);
-			var num1 = point1.Longitude * (Math.PI / 180.0);
-			var d2 = point2.Latitude * (Math.PI / 180.0);
-			var num2 = point2.Longitude * (Math.PI / 180.0) - num1;
+			var d1 = point1.lat * (Math.PI / 180.0);
+			var num1 = point1.lng * (Math.PI / 180.0);
+			var d2 = point2.lat * (Math.PI / 180.0);
+			var num2 = point2.lng * (Math.PI / 180.0) - num1;
 			var d3 = Math.Pow(Math.Sin((d2 - d1) / 2.0), 2.0) +
 					 Math.Cos(d1) * Math.Cos(d2) * Math.Pow(Math.Sin(num2 / 2.0), 2.0);
 			return 6376500.0 * (2.0 * Math.Atan2(Math.Sqrt(d3), Math.Sqrt(1.0 - d3)));

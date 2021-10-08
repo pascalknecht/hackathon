@@ -29,6 +29,14 @@ namespace data.Entities
 			get { return PricePerHour.ToString("f2"); }
 		}
 
+		public double PowerPricePerHour { get; set; }
+
+		[NotMapped]
+		public string PowerPricePerHourFormatted
+		{
+			get { return PowerPricePerHour.ToString("f2"); }
+		}
+
 		[NotMapped]
 		public double TravelTime
 		{
