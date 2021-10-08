@@ -164,7 +164,7 @@ export default function Home({ rootUrl }) {
                       </Box>
                   </TabPanel>
                   <TabPanel>
-                      <Heading size="lg" mb={4}>Parkplätze in deiner Nähe</Heading>
+                      <Heading size="lg" mb={4} color="black">Parkplätze in deiner Nähe</Heading>
                       <List spacing={3}>
                           { parkingSpaces.map(p => (<ListItem onClick={() => {
                                   setCurrentParkingSpaceId(p.id);
@@ -182,7 +182,7 @@ export default function Home({ rootUrl }) {
                       </List>
                   </TabPanel>
                   <TabPanel>
-                      <Heading size="lg" mb={4}>Deine Bestellungen</Heading>
+                      <Heading size="lg" mb={4} color="black">Deine Bestellungen</Heading>
                       <List spacing={3}>
                       { bookings.map(b => <ListItem onClick={() => {
                           alert(0)

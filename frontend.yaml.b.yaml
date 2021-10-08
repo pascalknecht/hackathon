@@ -28,13 +28,8 @@ spec:
       labels:
         app: src-frontend
     spec:
-      imagePullSecrets:
-        - name: substringgmbh-docker-registry
       containers:
       - name: src-frontend
         image: src-frontend
         ports:
-          - containerPort: 3000    
-        env:
-          - name: "ROOT_URL"
-            value: "https://hackathon-api.substring.ch"     
+          - containerPort: 3000      
