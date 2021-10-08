@@ -59,6 +59,7 @@ export default function Home({ rootUrl }) {
     const [ currentParkingSpace, setCurrentParkingSpace ] = useState(null);
     const [ bookings, setBookings ] = useState([]);
     const [ searching, setSearching ] = useState(false);
+    const [ currentCoordinates, setCurrentCoordinates] = useState({lat: 7.4474, lng: 46.9480})
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -67,7 +68,7 @@ export default function Home({ rootUrl }) {
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [7.4474, 46.9480],
+            center: [currentCoordinates.lat, currentCoordinates.lng],
             zoom: 15
         });
         // Add the control to the map.
@@ -87,6 +88,8 @@ export default function Home({ rootUrl }) {
                 .addTo(map.current);
 
             map.current.setCenter([position.coords.longitude, position.coords.latitude]);
+
+            setCurrentCoordinates({lat: position.coords.latitude, lng: position.coords.longitude});
         }
 
         if (navigator.geolocation) {
@@ -117,7 +120,16 @@ export default function Home({ rootUrl }) {
 
     useEffect(() => {
         if (isOpen) {
-            fetch(rootUrl + "/parkingspace/" + currentParkingSpaceId).then(resp => resp.json()).then(d => setCurrentParkingSpace(d))
+            fetch(rootUrl + "/parkingspace/" + currentParkingSpaceId, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({lat: currentCoordinates.lat, lng: currentCoordinates.lng})
+            })
+                .then(resp => resp.json())
+                .then(d => setCurrentParkingSpace(d))
         }
     }, [isOpen])
 
@@ -148,10 +160,13 @@ export default function Home({ rootUrl }) {
         setTimeout(() => {
             fetch(rootUrl + "/parkingspace/nearest")
                 .then(response => response.json())
-                .then(({id}) => setCurrentParkingSpaceId(id));
+                .then(({id}) => {
+                    setCurrentParkingSpaceId(id);
+                    onOpen();
+                    setSearching(false);
+                });
 
-            onOpen();
-            setSearching(false);
+
         }, 3000);
     }
 
@@ -232,7 +247,7 @@ export default function Home({ rootUrl }) {
                                   <Heading size="lg">{currentParkingSpace.title}</Heading>
                                   <Text fontWeight="bold">CHF {currentParkingSpace.pricePerHourFormatted}/h</Text>
                                   <Text>
-                                      2 min Fahrzeit von deinem Standort
+                                      {currentParkingSpace.travelTime} min Fahrzeit von deinem Standort
                                   </Text>
                               </Box>
                               <Image borderRadius="md" boxSize="75px"  src="/parking.jpg"></Image>
