@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "common", "common\common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "api\api.csproj", "{355D5CA8-19CD-4247-9994-64F1851F153F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "data", "data\data.csproj", "{4CD835F7-6664-484E-9E36-516B0C09200A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{355D5CA8-19CD-4247-9994-64F1851F153F}.Release|x64.Build.0 = Release|Any CPU
 		{355D5CA8-19CD-4247-9994-64F1851F153F}.Release|x86.ActiveCfg = Release|Any CPU
 		{355D5CA8-19CD-4247-9994-64F1851F153F}.Release|x86.Build.0 = Release|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Debug|x64.Build.0 = Debug|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Debug|x86.Build.0 = Debug|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Release|x64.ActiveCfg = Release|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Release|x64.Build.0 = Release|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Release|x86.ActiveCfg = Release|Any CPU
+		{4CD835F7-6664-484E-9E36-516B0C09200A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
