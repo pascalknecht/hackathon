@@ -38,7 +38,8 @@ import {
 import { useRouter } from 'next/router'
 import {Box} from "@chakra-ui/layout";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import {SearchIcon} from "@chakra-ui/icons";
+import {CheckCircleIcon, SearchIcon} from "@chakra-ui/icons";
+import Battery from '../assets/svg/battery.svg';
 
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
@@ -47,9 +48,6 @@ export default function Home({ rootUrl }) {
     const map = useRef(null);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const {  isOpen: isOpenConfirmModal,
-        onOpen: onOpenConfirmModal,
-        onClose: onCloseConfirmModal  } = useDisclosure();
     const [ booking, setBooking] = useState(false);
     const [ error, setError ] = useState(false);
     const [ startDate, setStartDate ] = useState(new Date());
@@ -59,9 +57,68 @@ export default function Home({ rootUrl }) {
     const [ currentParkingSpace, setCurrentParkingSpace ] = useState(null);
     const [ bookings, setBookings ] = useState([]);
     const [ searching, setSearching ] = useState(false);
-    const [ currentCoordinates, setCurrentCoordinates] = useState({lat: 7.4474, lng: 46.9480});
+    const [ currentCoordinates, setCurrentCoordinates] = useState({lat: 46.9480, lng: 7.4474});
     const [ bookingSuccess, setBookingSuccess ] = useState(false);
     const [ loadingRoute, setLoadingRoute ] = useState(false);
+    const [ navigationMode, setNavigationMode ] = useState(false);
+
+    async function getRoute(end, animation = false) {
+        // make directions request using cycling profile
+        const query = await fetch(
+            `https://api.mapbox.com/directions/v5/mapbox/driving/${currentCoordinates.lng},${currentCoordinates.lat};${end.lng},${end.lat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+            { method: 'GET' }
+        );
+        const json = await query.json();
+        const data = json.routes[0];
+        const route = data.geometry.coordinates;
+        const geojson = {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': route
+            }
+        };
+        // if the route already exists on the map, we'll reset it using setData
+        if (map.current.getSource('route')) {
+            map.current.getSource('route').setData(geojson);
+        }
+        // otherwise, we'll make a new request
+        else {
+            map.current.addLayer({
+                'id': 'route',
+                'type': 'line',
+                'source': {
+                    'type': 'geojson',
+                    'data': geojson
+                },
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': '#4F46E5',
+                    'line-width': 5,
+                    'line-opacity': 0.75
+                }
+            });
+        }
+
+        if (animation) {
+            map.current.flyTo({
+                // These options control the ending camera position: centered at
+                // the target, at zoom level 9, and north up.
+                center: [currentCoordinates.lng, currentCoordinates.lat],
+                zoom: 15,
+                bearing: 0,
+
+                // this animation is considered essential with respect to prefers-reduced-motion
+                essential: true
+            });
+
+            document.getElementsByClassName("mapboxgl-ctrl-geocoder--input")[0].blur();
+        }
+    }
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -70,16 +127,48 @@ export default function Home({ rootUrl }) {
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [currentCoordinates.lat, currentCoordinates.lng],
+            center: [currentCoordinates.lng, currentCoordinates.lat],
             zoom: 15
         });
         // Add the control to the map.
         map.current.addControl(
             new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
+                mapboxgl: mapboxgl,
             })
         );
+
+        map.current.on('load', () => {
+            // make an initial directions request that
+            // starts and ends at the same location
+            getRoute({lat: currentCoordinates.lat, lng: currentCoordinates.lng});
+
+            // Add starting point to the map
+            map.current.addLayer({
+                'id': 'point',
+                'type': 'circle',
+                'source': {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': [
+                            {
+                                'type': 'Feature',
+                                'properties': {},
+                                'geometry': {
+                                    'type': 'Point',
+                                    'coordinates': []
+                                }
+                            }
+                        ]
+                    }
+                },
+                'paint': {
+                    'circle-radius': 10,
+                    'circle-color': '#3887be'
+                }
+            });
+        });
 
         const showPosition = (position) => {
             const el = document.createElement('div');
@@ -133,6 +222,7 @@ export default function Home({ rootUrl }) {
                 .then(resp => resp.json())
                 .then(d => setCurrentParkingSpace(d))
         }
+        setBookingSuccess(false);
     }, [isOpen])
 
     const bookParkingSpace = () => {
@@ -149,7 +239,7 @@ export default function Home({ rootUrl }) {
             .then(available => {
                if (available) {
                    setBooking(false);
-                   onOpenConfirmModal();
+                   setBookingSuccess(true);
                } else {
                    alert("Not available");
                }
@@ -160,7 +250,7 @@ export default function Home({ rootUrl }) {
     const searchParkingSpace = () => {
         setSearching(true);
         setTimeout(() => {
-            fetch(rootUrl + "/parkingspace/nearest")
+            fetch(rootUrl + `/parkingspace/nearest?longitude=${currentCoordinates.lng}&latitude=${currentCoordinates.lat}`)
                 .then(response => response.json())
                 .then(({id}) => {
                     setCurrentParkingSpaceId(id);
@@ -172,8 +262,78 @@ export default function Home({ rootUrl }) {
         }, 3000);
     }
 
-    const loadRoute = () => {
-        alert("loading route");
+    const showRoute = () => {
+        onClose();
+        const end = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': {lat: currentParkingSpace.latitude, lng: currentParkingSpace.longitude}
+                    }
+                }
+            ]
+        };
+        if (map.current.getLayer('end')) {
+            map.current.getSource('end').setData(end);
+        } else {
+            map.current.addLayer({
+                'id': 'end',
+                'type': 'circle',
+                'source': {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': [
+                            {
+                                'type': 'Feature',
+                                'properties': {},
+                                'geometry': {
+                                    'type': 'Point',
+                                    'coordinates': {lat: currentParkingSpace.latitude, lng: currentParkingSpace.longitude}
+                                }
+                            }
+                        ]
+                    }
+                },
+                'paint': {
+                    'circle-radius': 10,
+                    'circle-color': '#f30'
+                }
+            });
+        }
+        getRoute({lat: currentParkingSpace.latitude, lng: currentParkingSpace.longitude}, true);
+        setNavigationMode(true);
+    }
+
+    const disableNavigationMode = () => {
+        setNavigationMode(false);
+        const end = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': {lat: currentParkingSpace.latitude, lng: currentParkingSpace.longitude}
+                    }
+                }
+            ]
+        };
+        const geojson = {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': []
+            }
+        };
+        map.current.getSource('end').setData(end);
+        map.current.getSource('route').setData(geojson);
     }
 
   return (
@@ -204,12 +364,11 @@ export default function Home({ rootUrl }) {
                       </Box>
                       <Box position="absolute" right={"20px"} bottom={"120px"}>
                           <HStack spacing={3}>
-                              <IconButton icon={<SearchIcon/>} colorScheme="orange" />
-                              <IconButton icon={<SearchIcon/>} colorScheme="orange" />
+                              <IconButton icon={<Battery/>} colorScheme="orange" />
                           </HStack>
                       </Box>
                       <Box position="absolute" left={"20px"} right={"20px"} bottom={"55px"}>
-                          <Button size="lg" loadingText="Parkplatz suchen" isLoading={searching} onClick={searchParkingSpace} colorScheme="indigo" width={"100%"} leftIcon={<SearchIcon mr={3} />}>Parkplatz finden</Button>
+                          { navigationMode ? <Button size="lg" onClick={disableNavigationMode} colorScheme="indigo" width={"100%"}>Navigation beenden</Button> : <Button size="lg" loadingText="Parkplatz suchen" isLoading={searching} onClick={searchParkingSpace} colorScheme="indigo" width={"100%"} leftIcon={<SearchIcon mr={3} />}>Parkplatz finden</Button>}
                       </Box>
                   </TabPanel>
                   <TabPanel>
@@ -274,8 +433,11 @@ export default function Home({ rootUrl }) {
                           <Input type="datetime-local" onChange={(e) => setEndDate(new Date(e.target.value))} />
 
                           <Box pt={4} pb={4}>
-                              {bookingSuccess ? <Button colorScheme="green" size="lg" loadingText="Route anzeigen" isLoading={loadingRoute} onClick={loadRoute}>Buchung erfolgreich</Button> : <Button isLoading={booking} onClick={bookParkingSpace} width="100%" colorScheme="indigo">Jetzt buchen</Button>}
+                              {bookingSuccess ? <Button colorScheme="green" size="lg" loadingText="Route anzeigen" isLoading={loadingRoute} onClick={() => {}} leftIcon={<CheckCircleIcon mr={3} />} width="100%">Buchung erfolgreich</Button> : <Button isLoading={booking} onClick={bookParkingSpace} width="100%" colorScheme="indigo">Jetzt buchen</Button>}
                           </Box>
+                          { bookingSuccess && <Flex pt={2} pb={4} justifyContent="center">
+                              <Button variant="link" onClick={showRoute}>Route anzeigen</Button>
+                          </Flex>}
 
                       </VStack> : <Box pt={3} pb={3}>
                           <Spinner display="block" ml="auto" mr="auto" />
@@ -283,19 +445,6 @@ export default function Home({ rootUrl }) {
                   </DrawerBody>
               </DrawerContent>
           </Drawer>
-          <Modal isOpen={isOpenConfirmModal} onClose={onCloseConfirmModal}>
-              <ModalOverlay />
-              <ModalContent>
-                  <ModalHeader>Vielen Dank für deine Bestellung</ModalHeader>
-                  <ModalBody>
-                     dsawddas
-                  </ModalBody>
-
-                  <ModalFooter>
-                      <Button colorScheme="indigo" onClick={onCloseConfirmModal}>Bestätigen</Button>
-                  </ModalFooter>
-              </ModalContent>
-          </Modal>
       </Layout>
   );
 }
