@@ -30,7 +30,7 @@ namespace api
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddDbContext<ParkingDbContext>(options =>
-				 options.UseSqlite($"Data Source=hackathon.db"));
+				options.UseSqlite($"Data Source=hackathon.db"));
 
 			// services.AddDatabaseDeveloperPageExceptionFilter();    
 			services.AddAuthentication(options =>
