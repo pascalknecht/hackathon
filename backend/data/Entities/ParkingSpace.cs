@@ -28,6 +28,13 @@ namespace data.Entities
 		{
 			get { return PricePerHour.ToString("f2"); }
 		}
+
+		[NotMapped]
+		public double TravelTime
+		{
+			get; set;
+		}
+
 		public ChargerType ChargerType { get; set; }
 		public Owner Owner { get; set; }
 		public virtual IEnumerable<Booking> Bookings { get; set; }

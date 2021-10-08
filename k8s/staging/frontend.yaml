@@ -37,4 +37,4 @@ spec:
           - containerPort: 3000   
         env:
           - name: "ROOT_URL"
-            value: "https://hackathon-api.substring.ch"           
+            value: "https://hackathon-api.substring.dev"           
