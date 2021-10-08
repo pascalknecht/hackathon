@@ -20,7 +20,18 @@ build:
       manual:
         - src: 'frontend/**/*.js'
           dest: .
+
+profiles:
+  - name: substring
+    build:
+      local:
+        push: true
+    deploy:
+      kubectl:
+        manifests:
+          - k8s/staging/*.yaml
+
 deploy:
   kubectl:
     manifests:
-    - k8s/*.yaml
+    - k8s/local/*.yaml

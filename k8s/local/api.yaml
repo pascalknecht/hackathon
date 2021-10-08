@@ -28,6 +28,8 @@ spec:
       labels:
         app: src-api
     spec:
+      imagePullSecrets:
+        - name: substringgmbh-docker-registry
       containers:
       - name: src-api
         image: src-api
