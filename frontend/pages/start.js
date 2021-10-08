@@ -38,6 +38,7 @@ import {
 import { useRouter } from 'next/router'
 import {Box} from "@chakra-ui/layout";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import {SearchIcon} from "@chakra-ui/icons";
 
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
@@ -57,6 +58,7 @@ export default function Home({ rootUrl }) {
     const [ currentParkingSpaceId, setCurrentParkingSpaceId ] = useState(0);
     const [ currentParkingSpace, setCurrentParkingSpace ] = useState(null);
     const [ bookings, setBookings ] = useState([]);
+    const [ searching, setSearching ] = useState(false);
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -77,10 +79,14 @@ export default function Home({ rootUrl }) {
         );
 
         const showPosition = (position) => {
-            console.log(position);
-            new mapboxgl.Marker()
+            const el = document.createElement('div');
+            el.className = 'marker';
+
+            new mapboxgl.Marker(el)
                 .setLngLat([position.coords.longitude, position.coords.latitude])
                 .addTo(map.current);
+
+            map.current.setCenter([position.coords.longitude, position.coords.latitude]);
         }
 
         if (navigator.geolocation) {
@@ -92,7 +98,7 @@ export default function Home({ rootUrl }) {
             .then(markers => {
                 setParkingSpaces(markers);
                 markers.forEach(m => {
-                    const marker = new mapboxgl.Marker()
+                    const marker = new mapboxgl.Marker({scale: 1.2, color: "#6366F1"})
                         .setLngLat([m.longitude, m.latitude])
                         .addTo(map.current);
                     marker.getElement().addEventListener('click', () => {
@@ -136,6 +142,19 @@ export default function Home({ rootUrl }) {
             });
     }
 
+
+    const searchParkingSpace = () => {
+        setSearching(true);
+        setTimeout(() => {
+            fetch(rootUrl + "/parkingspace/nearest")
+                .then(response => response.json())
+                .then(id => setCurrentParkingSpaceId(id))
+
+            onOpen();
+            setSearching(false);
+        }, 3000);
+    }
+
   return (
       <Layout>
           <Tabs height="100%" width="100%" position="relative" isFitted>
@@ -158,9 +177,12 @@ export default function Home({ rootUrl }) {
               </TabList>
 
               <TabPanels height="100%" width="100%">
-                  <TabPanel height="100%" width="100%" padding={0}>
+                  <TabPanel height="100%" width="100%" padding={0} position="relative">
                       <Box height="100%" width="100%">
                           <Box ref={mapContainer} height="100%" width="100%"/>
+                      </Box>
+                      <Box position="absolute" left={"20px"} right={"20px"} bottom={"55px"}>
+                          <Button size="lg" loadingText="Parkplatz suchen" isLoading={searching} onClick={searchParkingSpace} colorScheme="indigo" width={"100%"} leftIcon={<SearchIcon mr={3} />}>Parkplatz finden</Button>
                       </Box>
                   </TabPanel>
                   <TabPanel>
@@ -173,8 +195,9 @@ export default function Home({ rootUrl }) {
                               <HStack>
                                   <Image borderRadius="md" boxSize="50px"  src="/parking.jpg"></Image>
                                   <Box>
-                                      <Heading size="sm">Parkplatz Holligen</Heading>
-                                      Lorem ipsum dolor sit amet, consectetur adipisicing elit
+                                      <Heading size="sm">{p.Title}</Heading>
+                                      <Text>CHF {p.PricePerHour}</Text>
+                                      <Text>{p.Description}</Text>
                                   </Box>
                               </HStack>
                           </ListItem>)
@@ -207,6 +230,7 @@ export default function Home({ rootUrl }) {
                           <HStack>
                               <Box>
                                   <Heading size="lg">{currentParkingSpace.title}</Heading>
+                                  <Text>CHF {currentParkingSpace.PricePerHour}</Text>
                                   <Text>
                                       2 min Fahrzeit von deinem Standort
                                   </Text>
