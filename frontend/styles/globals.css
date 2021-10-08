@@ -25,3 +25,27 @@ body {
 .mapboxgl-ctrl-top-right .mapboxgl-ctrl {
   float: none;
 }
+
+.marker {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: #6366F1;
+  animation-name: example;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes example {
+  from {
+    box-shadow:
+            0 0 0 10px hsl(0, 0%, 80%),
+            0 0 0 15px hsla(0, 0%, 90%);
+  }
+  to {
+    box-shadow:
+            0 0 0 20px hsl(0, 0%, 80%),
+            0 0 0 15px hsla(0, 0%, 90%);
+  }
+}
