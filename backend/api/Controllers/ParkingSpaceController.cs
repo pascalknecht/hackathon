@@ -34,7 +34,8 @@ namespace api.Controllers
 
 			foreach (var parkingSpace in parkingSpaces)
 			{
-				parkingSpace.PricePerHour = ExtremeCrazyDynamicPricingAlgorithm(parkingSpace);
+				parkingSpace.PricePerHour = ExtremeCrazyDynamicPricingAlgorithm(parkingSpace.PricePerHour);
+				parkingSpace.PowerPricePerHour = ExtremeCrazyDynamicPricingAlgorithm(parkingSpace.PowerPricePerHour);
 			}
 			return parkingSpaces;
 		}
@@ -102,14 +103,14 @@ namespace api.Controllers
 
 		}
 
-		private double ExtremeCrazyDynamicPricingAlgorithm(ParkingSpace parkingSpace)
+		private double ExtremeCrazyDynamicPricingAlgorithm(double price)
 		{
 			// This is a mock for the super fancy dynamic pricing that we will have in the future. ;-)
 			Random random = new Random();
 
-			var variance = ((parkingSpace.PricePerHour * 0.1) * random.NextDouble());
+			var variance = ((price * 0.1) * random.NextDouble());
 			var multiplicator = random.NextDouble() <= 0.5 ? -1 : 1;
-			var value = parkingSpace.PricePerHour + (multiplicator * variance);
+			var value = price + (multiplicator * variance);
 			return Math.Round(value * 20, MidpointRounding.AwayFromZero) / 20;
 
 		}
