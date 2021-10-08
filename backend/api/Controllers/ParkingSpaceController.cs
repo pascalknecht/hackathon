@@ -48,20 +48,26 @@ namespace api.Controllers
 
 		[HttpGet]
 		[Route("nearest")]
-		public int GetNearestParkingSpace(double longitude, double langitude)
+		public IdOutput GetNearestParkingSpace(double longitude, double latitude)
 		{
 			var parkingSpaces = _context.ParkingSpace.ToList();
-			var parkingSpaceNearest = parkingSpaces.First();
+			ParkingSpace parkingSpaceNearest = new ParkingSpace();
+			double distance = Double.MaxValue;
 
 			foreach (var parkingSpace in parkingSpaces)
 			{
-				//var sCoord = new GeoCoordinate(sLatitude, sLongitude);
-				//var eCoord = new GeoCoordinate(eLatitude, eLongitude);
+				var sCoord = new Location(parkingSpace.Latitude, parkingSpace.Longitude);
+				var eCoord = new Location(latitude, longitude);
 
-				// return sCoord.GetDistanceTo(eCoord);
+				var distanceCurrent = CalculateDistance(sCoord, eCoord);
+				if (distanceCurrent < distance)
+				{
+					distance = distanceCurrent;
+					parkingSpaceNearest = parkingSpace;
+				}
 			}
 
-			return parkingSpaceNearest.ID;
+			return new IdOutput() { id = parkingSpaceNearest.ID };
 		}
 
 
@@ -98,8 +104,22 @@ namespace api.Controllers
 
 			var variance = ((parkingSpace.PricePerHour * 0.1) * random.NextDouble());
 			var multiplicator = random.NextDouble() <= 0.5 ? -1 : 1;
-			return parkingSpace.PricePerHour + (multiplicator * variance);
+			var value = parkingSpace.PricePerHour + (multiplicator * variance);
+			return Math.Round(value * 20, MidpointRounding.AwayFromZero) / 20;
 
+		}
+
+
+		// Stolen from stackoverflow.. sorry :-P https://stackoverflow.com/questions/60700865/find-distance-between-2-coordinates-in-net-core
+		private double CalculateDistance(Location point1, Location point2)
+		{
+			var d1 = point1.Latitude * (Math.PI / 180.0);
+			var num1 = point1.Longitude * (Math.PI / 180.0);
+			var d2 = point2.Latitude * (Math.PI / 180.0);
+			var num2 = point2.Longitude * (Math.PI / 180.0) - num1;
+			var d3 = Math.Pow(Math.Sin((d2 - d1) / 2.0), 2.0) +
+					 Math.Cos(d1) * Math.Cos(d2) * Math.Pow(Math.Sin(num2 / 2.0), 2.0);
+			return 6376500.0 * (2.0 * Math.Atan2(Math.Sqrt(d3), Math.Sqrt(1.0 - d3)));
 		}
 	}
 }
