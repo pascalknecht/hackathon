@@ -58,7 +58,7 @@ namespace api.Controllers
 				//var sCoord = new GeoCoordinate(sLatitude, sLongitude);
 				//var eCoord = new GeoCoordinate(eLatitude, eLongitude);
 
-				return sCoord.GetDistanceTo(eCoord);
+				// return sCoord.GetDistanceTo(eCoord);
 			}
 
 			return parkingSpaceNearest.ID;
