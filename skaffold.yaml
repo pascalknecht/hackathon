@@ -26,6 +26,23 @@ profiles:
     build:
       local:
         push: true
+      artifacts:
+      - image: src-api
+        context: backend
+        docker:
+            dockerfile: Dockerfile
+        sync:
+          manual:
+            - src: 'backend/**/*.cs'
+              dest: .
+      - image: src-frontend
+        context: frontend
+        docker:
+            dockerfile: Dockerfile
+        sync:
+          manual:
+            - src: 'frontend/**/*.js'
+              dest: .
     deploy:
       kubectl:
         manifests:
