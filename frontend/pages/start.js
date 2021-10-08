@@ -148,7 +148,7 @@ export default function Home({ rootUrl }) {
         setTimeout(() => {
             fetch(rootUrl + "/parkingspace/nearest")
                 .then(response => response.json())
-                .then(id => setCurrentParkingSpaceId(id))
+                .then(({id}) => setCurrentParkingSpaceId(id));
 
             onOpen();
             setSearching(false);
@@ -195,9 +195,9 @@ export default function Home({ rootUrl }) {
                               <HStack>
                                   <Image borderRadius="md" boxSize="50px"  src="/parking.jpg"></Image>
                                   <Box>
-                                      <Heading size="sm">{p.Title}</Heading>
-                                      <Text>CHF {p.PricePerHour}</Text>
-                                      <Text>{p.Description}</Text>
+                                      <Heading size="sm">{p.title}</Heading>
+                                      <Text fontWeight="bold">CHF {p.pricePerHourFormatted}/h</Text>
+                                      <Text>{p.description}</Text>
                                   </Box>
                               </HStack>
                           </ListItem>)
@@ -214,7 +214,7 @@ export default function Home({ rootUrl }) {
                               <Image borderRadius="md" boxSize="50px"  src="/parking.jpg"></Image>
                               <Box>
                                   <Heading size="sm">{b.parkingSpace.title}</Heading>
-                                  <Text>16.05.2021 09:00 - 16.05.2021 12:00</Text>
+                                  <Text>{b.startDateFormatted} - {b.endDateFormatted}</Text>
                               </Box>
                           </HStack>
                       </ListItem>)}
@@ -230,7 +230,7 @@ export default function Home({ rootUrl }) {
                           <HStack>
                               <Box>
                                   <Heading size="lg">{currentParkingSpace.title}</Heading>
-                                  <Text>CHF {currentParkingSpace.PricePerHour}</Text>
+                                  <Text fontWeight="bold">CHF {currentParkingSpace.pricePerHourFormatted}/h</Text>
                                   <Text>
                                       2 min Fahrzeit von deinem Standort
                                   </Text>

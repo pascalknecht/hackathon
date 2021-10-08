@@ -1,7 +1,7 @@
 import Layout from "../components/Frontend/layout";
 import React, {useEffect, useState} from "react";
 import Carousel from "../components/Frontend/carousel/Carousel";
-import {Button, Flex, Heading, HStack, Tag, Text, VStack} from "@chakra-ui/react";
+import {Button, Flex, Heading, HStack, Spinner, Tag, Text, VStack} from "@chakra-ui/react";
 import { useRouter } from 'next/router'
 
 export default function Home() {
@@ -14,7 +14,9 @@ export default function Home() {
     }, [activeItem])
   return (
       <Layout>
-          <Carousel gap={32} activeItem={activeItem} setActiveItem={setActiveItem}>
+          { activeItem === 3 ?
+              <Flex height="100%" justifyContent="center" alignItems="center"><Spinner display="block" ml="auto" mr="auto" /></Flex> :
+              <Carousel gap={32} activeItem={activeItem} setActiveItem={setActiveItem}>
               <Flex
                   justifyContent="space-between"
                   flexDirection="column"
@@ -27,16 +29,16 @@ export default function Home() {
                   height="100%"
               >
                   <VStack mb={0} mt={"30vh"}>
-                      <img src="/sedan.png" width={150}/>
+                      <img src="/intro_1.png" width={150}/>
                       <Heading
                           fontSize={{ base: "xl", md: "2xl" }}
                           textAlign="center"
                           w="full"
+                          pt={4}
                           mb={2}
                       >
-                          Willkommen bei test
+                          Finde einen freistehenden Parkplatz in deiner Nähe.
                       </Heading>
-                      <Text w="full">Mit test buchen Sie Parkplätze von Unternehmen und Privatpersonen.</Text>
                   </VStack>
 
                   <Flex justifyContent="space-between">
@@ -63,16 +65,16 @@ export default function Home() {
                   height="100%"
               >
                   <VStack mb={0} mt={"30vh"}>
-                      <img src="/sedan.png" width={150}/>
+                      <img src="/intro_2.png" width={150}/>
                       <Heading
                           fontSize={{ base: "xl", md: "2xl" }}
                           textAlign="center"
                           w="full"
+                          pt={4}
                           mb={2}
                       >
-                          Parkplätze einfach und günstig buchen
+                          Reserviere für sofort oder im Voraus den nächsten freien Parkplatz in der Nähe deines Zielortes.
                       </Heading>
-                      <Text w="full">Mit test buchen Sie Parkplätze von Unternehmen und Privatpersonen.</Text>
                   </VStack>
 
                   <Flex justifyContent="space-between">
@@ -99,16 +101,16 @@ export default function Home() {
                   height="100%"
               >
                   <VStack mb={0} mt={"30vh"}>
-                      <img src="/sedan.png" width={150}/>
+                      <img src="/intro_3.png" width={150}/>
                       <Heading
                           fontSize={{ base: "xl", md: "2xl" }}
                           textAlign="center"
                           w="full"
+                          pt={4}
                           mb={2}
                       >
-                          Lorem ipsum
+                          Wähle deine Parkzeit und bezahle einfach via Kreditkarte oder Twint.
                       </Heading>
-                      <Text w="full">Lorem ipsum dolor</Text>
                   </VStack>
 
                   <Flex justifyContent="space-between">
@@ -123,7 +125,7 @@ export default function Home() {
                       </Button>
                   </Flex>
               </Flex>
-          </Carousel>
+          </Carousel>}
       </Layout>
   );
 }
