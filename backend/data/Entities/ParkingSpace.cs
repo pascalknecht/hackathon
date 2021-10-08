@@ -22,6 +22,12 @@ namespace data.Entities
 		public string Description { get; set; }
 		public string Title { get; set; }
 		public double PricePerHour { get; set; }
+
+		[NotMapped]
+		public string PricePerHourFormatted
+		{
+			get { return PricePerHour.ToString("f2"); }
+		}
 		public ChargerType ChargerType { get; set; }
 		public Owner Owner { get; set; }
 		public virtual IEnumerable<Booking> Bookings { get; set; }
