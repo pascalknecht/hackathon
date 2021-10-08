@@ -47,7 +47,7 @@ namespace api.Controllers
 			var parkingSpace = _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
 			var sCoord = new Location(parkingSpace.Latitude, parkingSpace.Longitude);
 
-			parkingSpace.TravelTime = Math.Round((CalculateDistance(sCoord, location) / 225 / 60));
+			parkingSpace.TravelTime = Math.Round((CalculateDistance(sCoord, location) / 5500 / 60));
 
 			return parkingSpace;
 		}
@@ -66,6 +66,8 @@ namespace api.Controllers
 				var eCoord = new Location(latitude, longitude);
 
 				var distanceCurrent = CalculateDistance(sCoord, eCoord);
+				Console.WriteLine("distance: {0}, parkingSpace: {1}", distanceCurrent, parkingSpace.Title);
+
 				if (distanceCurrent < distance)
 				{
 					distance = distanceCurrent;
