@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Net;
+using System.Runtime.Intrinsics.X86;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,22 +38,24 @@ namespace api.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(BookingDto bookingDto)
+		public HttpStatusCode Create(BookingDto bookingDto)
 		{
-			var booking = new Booking() {
-				BookingFrom = bookingDto.bookingFrom,
-				BookingTo = bookingDto.bookingTo,
-				ParkingSpace = _context.ParkingSpace.Where(x => x.ID == bookingDto.parkingId).FirstOrDefault()
+			/*var booking = new Booking()
+			{
+				BookingFrom = DateTime.Parse(bookingDto.bookingFrom),
+				BookingTo = DateTime.Parse(bookingDto.bookingTo),
+				// ParkingSpace = _context.ParkingSpace.Where(x => x.ID == bookingDto.parkingId).FirstOrDefault()
 			};
-			_context.Add(booking);
-			await _context.SaveChangesAsync();
+			_context.Booking.Add(booking);
+			_context.SaveChanges();*/
+			return HttpStatusCode.Created;
 		}
 	}
 
 	public class BookingDto
 	{
-		public string bookingFrom {get;set;}
-		public string bookingTo {get;set;}
-		public string parkingId {get;set;}
+		public string bookingFrom { get; set; }
+		public string bookingTo { get; set; }
+		public int parkingId { get; set; }
 	}
 }
