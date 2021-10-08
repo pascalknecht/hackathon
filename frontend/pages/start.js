@@ -59,7 +59,9 @@ export default function Home({ rootUrl }) {
     const [ currentParkingSpace, setCurrentParkingSpace ] = useState(null);
     const [ bookings, setBookings ] = useState([]);
     const [ searching, setSearching ] = useState(false);
-    const [ currentCoordinates, setCurrentCoordinates] = useState({lat: 7.4474, lng: 46.9480})
+    const [ currentCoordinates, setCurrentCoordinates] = useState({lat: 7.4474, lng: 46.9480});
+    const [ bookingSuccess, setBookingSuccess ] = useState(false);
+    const [ loadingRoute, setLoadingRoute ] = useState(false);
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -101,7 +103,7 @@ export default function Home({ rootUrl }) {
             .then(markers => {
                 setParkingSpaces(markers);
                 markers.forEach(m => {
-                    const marker = new mapboxgl.Marker({scale: 1.2, color: "#6366F1"})
+                    const marker = new mapboxgl.Marker({scale: 1.2, color: m.chargerType > 1 ? "#6366F1" : "#ce6206"})
                         .setLngLat([m.longitude, m.latitude])
                         .addTo(map.current);
                     marker.getElement().addEventListener('click', () => {
@@ -170,6 +172,10 @@ export default function Home({ rootUrl }) {
         }, 3000);
     }
 
+    const loadRoute = () => {
+        alert("loading route");
+    }
+
   return (
       <Layout>
           <Tabs height="100%" width="100%" position="relative" isFitted>
@@ -195,6 +201,12 @@ export default function Home({ rootUrl }) {
                   <TabPanel height="100%" width="100%" padding={0} position="relative">
                       <Box height="100%" width="100%">
                           <Box ref={mapContainer} height="100%" width="100%"/>
+                      </Box>
+                      <Box position="absolute" right={"20px"} bottom={"120px"}>
+                          <HStack spacing={3}>
+                              <IconButton icon={<SearchIcon/>} colorScheme="orange" />
+                              <IconButton icon={<SearchIcon/>} colorScheme="orange" />
+                          </HStack>
                       </Box>
                       <Box position="absolute" left={"20px"} right={"20px"} bottom={"55px"}>
                           <Button size="lg" loadingText="Parkplatz suchen" isLoading={searching} onClick={searchParkingSpace} colorScheme="indigo" width={"100%"} leftIcon={<SearchIcon mr={3} />}>Parkplatz finden</Button>
@@ -262,7 +274,7 @@ export default function Home({ rootUrl }) {
                           <Input type="datetime-local" onChange={(e) => setEndDate(new Date(e.target.value))} />
 
                           <Box pt={4} pb={4}>
-                              <Button isLoading={booking} onClick={bookParkingSpace} width="100%" colorScheme="indigo">Jetzt buchen</Button>
+                              {bookingSuccess ? <Button colorScheme="green" size="lg" loadingText="Route anzeigen" isLoading={loadingRoute} onClick={loadRoute}>Buchung erfolgreich</Button> : <Button isLoading={booking} onClick={bookParkingSpace} width="100%" colorScheme="indigo">Jetzt buchen</Button>}
                           </Box>
 
                       </VStack> : <Box pt={3} pb={3}>
