@@ -48,7 +48,7 @@ namespace api.Controllers
 
 		[HttpGet]
 		[Route("nearest")]
-		public int GetNearestParkingSpace(double longitude, double latitude)
+		public IdOutput GetNearestParkingSpace(double longitude, double latitude)
 		{
 			var parkingSpaces = _context.ParkingSpace.ToList();
 			ParkingSpace parkingSpaceNearest = new ParkingSpace();
@@ -67,7 +67,7 @@ namespace api.Controllers
 				}
 			}
 
-			return parkingSpaceNearest.ID;
+			return new IdOutput() { id = parkingSpaceNearest.ID };
 		}
 
 
