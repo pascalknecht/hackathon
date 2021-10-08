@@ -10,7 +10,15 @@ build:
         dockerfile: Dockerfile
     sync:
       manual:
-        - src: 'src/**/*.cs'
+        - src: 'backend/**/*.cs'
+          dest: .
+  - image: src-frontend
+    context: frontend
+    docker:
+        dockerfile: Dockerfile
+    sync:
+      manual:
+        - src: 'frontend/**/*.js'
           dest: .
 deploy:
   kubectl:
