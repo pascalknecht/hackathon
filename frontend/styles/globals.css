@@ -16,3 +16,12 @@ body {
 .content-wrapper {
   flex-grow: 1;
 }
+
+.mapboxgl-ctrl-top-right {
+  left: 15px;
+  right: 15px;
+}
+
+.mapboxgl-ctrl-top-right .mapboxgl-ctrl {
+  float: none;
+}

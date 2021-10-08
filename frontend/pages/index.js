@@ -127,3 +127,8 @@ export default function Home() {
       </Layout>
   );
 }
+
+export async function getStaticProps() {
+    const rootUrl = process.env.ROOT_URL;
+    return {props: {rootUrl}};
+}

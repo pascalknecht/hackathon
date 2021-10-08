@@ -30,7 +30,7 @@ namespace api.Controllers
 		[HttpGet]
 		public IEnumerable<ParkingSpace> Get()
 		{
-			return _context.ParkingSpace.ToList();
+			return _context.ParkingSpace.Include(x => x.Bookings).ToList();
 		}
 
 		[HttpGet]
@@ -40,7 +40,7 @@ namespace api.Controllers
 			return _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
 		}
 
-		[HttpPost]
+		[HttpGet]
 		[Route("availability")]
 		public bool GetAvailability(AvailabilityInput input)
 		{

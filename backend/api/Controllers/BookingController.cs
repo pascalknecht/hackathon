@@ -34,5 +34,13 @@ namespace api.Controllers
 						.Include(x => x.ParkingSpace)
 				.ToList();
 		}
+
+		/*
+		[HttpPost]
+		public async Task<IActionResult> Create(Booking booking)
+		{
+			_context.Add(booking);
+			await _context.SaveChangesAsync();
+		}*/
 	}
 }

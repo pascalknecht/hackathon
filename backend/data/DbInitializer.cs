@@ -41,8 +41,8 @@ namespace data
 
 			var parkingSpaces = new ParkingSpace[]
 			{
-				new ParkingSpace{Longitude=7.405493,Latitude=46.942988,ChargerType=ChargerType.TurboCharge},
-				new ParkingSpace{Longitude=7.407654,Latitude=46.943574,ChargerType=ChargerType.TurboCharge},
+				new ParkingSpace{Title = "Holligen Parkplatz EWB/BLS", Description = "Gedackter Parkplatz in Ausserholligen", Longitude=7.4324089,Latitude=46.9448274,ChargerType=ChargerType.TurboCharge},
+				new ParkingSpace{Title = "Parkplatz Wankdorf Nord", Description = "Offener Parkplatz im Norden des Wankdorf Stadiums. Verfügbar 24/7.", Longitude=7.4659712,Latitude=46.9622409,ChargerType=ChargerType.TurboCharge},
 				new ParkingSpace{Longitude=7.408344,Latitude=46.943510,ChargerType=ChargerType.TurboCharge},
 				new ParkingSpace{Longitude=7.407644,Latitude=46.944129,ChargerType=ChargerType.TurboCharge},
 				new ParkingSpace{Longitude=7.408691,Latitude=46.942841,ChargerType=ChargerType.TurboCharge},
@@ -55,7 +55,7 @@ namespace data
 			context.SaveChanges();
 
 			var user = context.User.First();
-			var parkingSpace = context.ParkingSpace.Single(r => r.ID == 1);
+			var parkingSpace = context.ParkingSpace.First();
 			var bookings = new Booking[]
 			{
 				new Booking{BookingFrom = DateTime.Now, BookingTo = DateTime.Now, User = user, ParkingSpace = parkingSpace}
