@@ -4,11 +4,11 @@ namespace api
 	{
 		public Location(double latitude, double longitude)
 		{
-			Latitude = latitude;
-			Longitude = longitude;
+			lat = latitude;
+			lng = longitude;
 		}
 
-		public double Latitude { get; set; }
-		public double Longitude { get; set; }
+		public double lat { get; set; }
+		public double lng { get; set; }
 	}
 }
