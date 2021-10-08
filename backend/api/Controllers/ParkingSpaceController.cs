@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using data.Entities;
 using data;
+using HttpData;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -29,6 +31,32 @@ namespace api.Controllers
 		public IEnumerable<ParkingSpace> Get()
 		{
 			return _context.ParkingSpace.ToList();
+		}
+
+		[HttpPost]
+		[Route("availability")]
+		public bool GetAvailability(AvailabilityInput input)
+		{
+			var parkingSpace = _context.ParkingSpace.Include(x => x.Bookings).Where(r => r.ID == input.ParkingSpaceID).FirstOrDefault();
+
+			bool available = true;
+
+			foreach (Booking b in parkingSpace.Bookings)
+			{
+				// Sorry for the bad code :-)
+				if (b.BookingFrom <= input.BookingFrom && input.BookingFrom >= b.BookingTo)
+				{
+					available = false;
+				}
+				else if (b.BookingFrom <= input.BookingTo && input.BookingFrom >= b.BookingTo)
+				{
+					available = false;
+				}
+
+			}
+
+			return available;
+
 		}
 	}
 }

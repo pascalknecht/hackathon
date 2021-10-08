@@ -22,7 +22,7 @@ namespace data.Entities
 		public string Description { get; set; }
 		public ChargerType ChargerType { get; set; }
 		public Owner Owner { get; set; }
-		public virtual IEnumerable<Booking> bookings { get; set; }
+		public virtual IEnumerable<Booking> Bookings { get; set; }
 
 	}
 }
