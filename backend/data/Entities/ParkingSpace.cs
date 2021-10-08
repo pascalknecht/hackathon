@@ -15,8 +15,8 @@ namespace data.Entities
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int ID { get; set; }
-		public long Longitude { get; set; }
-		public long Latitude { get; set; }
+		public double Longitude { get; set; }
+		public double Latitude { get; set; }
 		public ChargerType ChargerType { get; set; }
 
 	}
