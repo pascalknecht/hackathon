@@ -39,11 +39,16 @@ namespace api.Controllers
 			return parkingSpaces;
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Route("{id}")]
-		public ParkingSpace Get(int id)
+		public ParkingSpace Get(int id, Location location)
 		{
-			return _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
+			var parkingSpace = _context.ParkingSpace.Where(x => x.ID == id).FirstOrDefault();
+			var sCoord = new Location(parkingSpace.Latitude, parkingSpace.Longitude);
+
+			parkingSpace.TravelTime = Math.Round((CalculateDistance(sCoord, location) / 225 / 60));
+
+			return parkingSpace;
 		}
 
 		[HttpGet]
