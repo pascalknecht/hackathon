@@ -30,7 +30,13 @@ namespace api.Controllers
 		[HttpGet]
 		public IEnumerable<ParkingSpace> Get()
 		{
-			return _context.ParkingSpace.Include(x => x.Bookings).ToList();
+			var parkingSpaces = _context.ParkingSpace.Include(x => x.Bookings).ToList();
+
+			foreach (var parkingSpace in parkingSpaces)
+			{
+				parkingSpace.PricePerHour = ExtremeCrazyDynamicPricingAlgorithm(parkingSpace);
+			}
+			return parkingSpaces;
 		}
 
 		[HttpGet]
@@ -63,6 +69,17 @@ namespace api.Controllers
 			}
 
 			return available;
+
+		}
+
+		private double ExtremeCrazyDynamicPricingAlgorithm(ParkingSpace parkingSpace)
+		{
+			// This is a mock for the super fancy dynamic pricing that we will have in the future. ;-)
+			Random random = new Random();
+
+			var variance = ((parkingSpace.PricePerHour * 0.1) * random.NextDouble());
+			var multiplicator = random.NextDouble() <= 0.5 ? -1 : 1;
+			return parkingSpace.PricePerHour + (multiplicator * variance);
 
 		}
 	}
