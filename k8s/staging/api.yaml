@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: src-api
+  labels:
+    app: src-api
+spec:
+  selector:
+    app: src-api
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: src-api
+  labels:
+    app: src-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: src-api
+  template:
+    metadata:
+      labels:
+        app: src-api
+    spec:
+      imagePullSecrets:
+        - name: substringgmbh-docker-registry
+      containers:
+      - name: src-api
+        image: src-api
+        ports:
+          - containerPort: 80
+        env:
+          - name: "ASPNETCORE_ENVIRONMENT"
+            value: "Development"        
