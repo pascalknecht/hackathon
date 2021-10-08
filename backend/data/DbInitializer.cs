@@ -33,8 +33,6 @@ namespace data
 				new User{Firstname = "Tina", Lastname="Muster"},
 			};
 
-			Console.WriteLine("aaa {0}", users[0].Firstname);
-
 			foreach (User s in users)
 			{
 				context.User.Add(s);
@@ -56,13 +54,8 @@ namespace data
 			}
 			context.SaveChanges();
 
-		}
-
-		public static void DummyTestdata(ParkingDbContext context)
-		{
 			var user = context.User.First();
 			var parkingSpace = context.ParkingSpace.Single(r => r.ID == 1);
-			Console.WriteLine("LOG {0}", user.Firstname);
 			var bookings = new Booking[]
 			{
 				new Booking{BookingFrom = DateTime.Now, BookingTo = DateTime.Now, User = user, ParkingSpace = parkingSpace}
@@ -73,6 +66,8 @@ namespace data
 				context.Booking.Add(s);
 			}
 			context.SaveChanges();
+
 		}
+
 	}
 }
