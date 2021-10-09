@@ -9,6 +9,7 @@ namespace data.Entities
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int ID { get; set; }
+		public double Price { get; set; }
 		public DateTime BookingFrom { get; set; }
 		public String BookingFromFormatted
 		{
