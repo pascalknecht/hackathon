@@ -41,11 +41,17 @@ namespace api.Controllers
 		[HttpPost]
 		public HttpStatusCode Create(BookingInput bookingDto)
 		{
+			var parkingSpace = _context.ParkingSpace.Where(x => x.ID == bookingDto.parkingId).FirstOrDefault();
+			var bookingFrom = DateTime.Parse(bookingDto.bookingFrom);
+			var bookingTo = DateTime.Parse(bookingDto.bookingTo);
+			var differenceInHours = (bookingTo - bookingFrom).TotalHours;
+
 			var booking = new Booking()
 			{
 				BookingFrom = DateTime.Parse(bookingDto.bookingFrom),
 				BookingTo = DateTime.Parse(bookingDto.bookingTo),
-				ParkingSpace = _context.ParkingSpace.Where(x => x.ID == bookingDto.parkingId).FirstOrDefault()
+				Price = parkingSpace.PricePerHour * differenceInHours,
+				ParkingSpace = parkingSpace
 			};
 			_context.Booking.Add(booking);
 			_context.SaveChanges();
