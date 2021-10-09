@@ -40,12 +40,12 @@ body {
 @keyframes example {
   from {
     box-shadow:
-            0 0 0 10px hsl(0, 0%, 80%),
+            0 0 0 10px rgba(68, 177, 244, 0.4),
             0 0 0 15px hsla(0, 0%, 90%);
   }
   to {
     box-shadow:
-            0 0 0 20px hsl(0, 0%, 80%),
+            0 0 0 20px rgba(68, 177, 244, 0.4),
             0 0 0 15px hsla(0, 0%, 90%);
   }
 }

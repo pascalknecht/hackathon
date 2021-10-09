@@ -61,6 +61,7 @@ export default function Home({ rootUrl }) {
     const [ bookingSuccess, setBookingSuccess ] = useState(false);
     const [ loadingRoute, setLoadingRoute ] = useState(false);
     const [ navigationMode, setNavigationMode ] = useState(false);
+    const [ filterEvs, setFilterEvs ] = useState(false);
 
     async function getRoute(end, animation = false) {
         // make directions request using cycling profile
@@ -116,7 +117,9 @@ export default function Home({ rootUrl }) {
                 essential: true
             });
 
-            document.getElementsByClassName("mapboxgl-ctrl-geocoder--input")[0].blur();
+            setTimeout(() => {
+                document.getElementsByClassName("mapboxgl-ctrl-geocoder--input")[0].blur();
+            }, 0);
         }
     }
 
@@ -135,6 +138,7 @@ export default function Home({ rootUrl }) {
             new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
                 mapboxgl: mapboxgl,
+                marker: false,
             })
         );
 
@@ -383,6 +387,7 @@ export default function Home({ rootUrl }) {
                                   <Box>
                                       <Heading size="sm">{p.title}</Heading>
                                       <Text fontWeight="bold">CHF {p.pricePerHourFormatted}/h</Text>
+                                      <Text>Parkplatznr. {p.id}</Text>
                                       <Text>{p.description}</Text>
                                   </Box>
                               </HStack>
@@ -400,7 +405,8 @@ export default function Home({ rootUrl }) {
                               <Image borderRadius="md" boxSize="50px"  src="/parking.jpg"></Image>
                               <Box>
                                   <Heading size="sm">{b.parkingSpace.title}</Heading>
-                                  <Text>{b.startDateFormatted} - {b.endDateFormatted}</Text>
+                                  <Text fontWeight="bold">CHF {b.price}</Text>
+                                  <Text>{b.bookingFromFormatted} - {b.bookingToFormatted}</Text>
                               </Box>
                           </HStack>
                       </ListItem>)}
@@ -408,7 +414,7 @@ export default function Home({ rootUrl }) {
                   </TabPanel>
               </TabPanels>
           </Tabs>
-          <Drawer placement="bottom" size={"xl"} onClose={onClose} isOpen={isOpen}>
+          <Drawer placement="bottom" size={"xl"} onClose={onClose} isOpen={isOpen} borderRadius="md">
               <DrawerOverlay />
               <DrawerContent>
                   <DrawerBody>
@@ -425,6 +431,7 @@ export default function Home({ rootUrl }) {
                           </HStack>
 
                           <Heading size="md">Info</Heading>
+                          <Text>Parkplatznr. {currentParkingSpace.id}</Text>
                           <p>{currentParkingSpace.description}</p>
                           <Heading size="md">Parkierzeit</Heading>
                           <Text fontWeight="bold">Von</Text>
