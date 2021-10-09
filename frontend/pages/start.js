@@ -196,7 +196,7 @@ export default function Home({ rootUrl }) {
             .then(markers => {
                 setParkingSpaces(markers);
                 markers.forEach(m => {
-                    const marker = new mapboxgl.Marker({scale: 1.2, color: m.chargerType > 1 ? "#6366F1" : "#ce6206"})
+                    const marker = new mapboxgl.Marker({scale: 1.2, color: m.chargerType > 1 ? "#ce6206" : "#6366F1"})
                         .setLngLat([m.longitude, m.latitude])
                         .addTo(map.current);
                     marker.getElement().addEventListener('click', () => {
@@ -340,6 +340,15 @@ export default function Home({ rootUrl }) {
         map.current.getSource('route').setData(geojson);
     }
 
+    const filterEvsToggle = () => {
+        const m1 = document.querySelectorAll('[fill="#ce6206"]');
+        for(let i = 0; i < m1.length; i++) {
+            m1[i].parentNode.parentNode.style.display = !filterEvs ? 'none' : 'block';
+        }
+
+        setFilterEvs(!filterEvs);
+    }
+
   return (
       <Layout>
           <Tabs height="100%" width="100%" position="relative" isFitted>
@@ -368,7 +377,7 @@ export default function Home({ rootUrl }) {
                       </Box>
                       <Box position="absolute" right={"20px"} bottom={"120px"}>
                           <HStack spacing={3}>
-                              <IconButton icon={<Battery/>} colorScheme="orange" />
+                              <IconButton icon={<Battery/>} colorScheme="orange" onClick={filterEvsToggle} opacity={filterEvs ? 0.3 : 1} />
                           </HStack>
                       </Box>
                       <Box position="absolute" left={"20px"} right={"20px"} bottom={"55px"}>
@@ -406,6 +415,7 @@ export default function Home({ rootUrl }) {
                               <Box>
                                   <Heading size="sm">{b.parkingSpace.title}</Heading>
                                   <Text fontWeight="bold">CHF {b.price}</Text>
+                                  { b.parkingSpace.chargerType > 1 && <Text color="orange.500">Preis/kWh: CHF {b.parkingSpace.powerPricePerHourFormatted}</Text>}
                                   <Text>{b.bookingFromFormatted} - {b.bookingToFormatted}</Text>
                               </Box>
                           </HStack>
@@ -423,6 +433,7 @@ export default function Home({ rootUrl }) {
                               <Box>
                                   <Heading size="lg">{currentParkingSpace.title}</Heading>
                                   <Text fontWeight="bold">CHF {currentParkingSpace.pricePerHourFormatted}/h</Text>
+                                  { currentParkingSpace.chargerType > 1 && <Text color="orange.500">Preis/kWh: CHF {currentParkingSpace.powerPricePerHourFormatted}</Text>}
                                   <Text>
                                       {currentParkingSpace.travelTime} min Fahrzeit von deinem Standort
                                   </Text>
